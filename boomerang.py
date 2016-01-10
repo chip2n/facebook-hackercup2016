@@ -37,10 +37,10 @@ def get_input(filename):
 def main():
   universes = get_input(sys.argv[1])
 
-  for universe in universes:
+  for i, universe in enumerate(universes):
     count = sum([boomerang_count(point, universe) for point in universe])
 
-    print(count)
+    print('Case #' + str(i) + ': ' + str(count))
 
 if __name__ == '__main__':
   main()
