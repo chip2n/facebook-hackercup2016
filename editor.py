@@ -16,15 +16,12 @@ def dijkstra(words):
   while list:
     cheapest_node = list.pop(0)
     if isFinished(cheapest_node):
-      print()
-      print(cheapest_node)
-      break
+      return cheapest_node.currentCost
     list = list + expand_node(cheapest_node, words)
     list.sort(key=lambda x: x.currentCost, reverse=False)
-    #print(cheapest_node)
-    #print([str( x) for x in list])
-    #print()
 
+# calculate cost from word1 to go to word2
+# Doesnt include cost of printing
 def word_diff_cost(w1,w2):
   if w1 is None:
     return len(w2)
@@ -42,18 +39,19 @@ class vertex:
   def __str__(self):
     return str(len(self.words)) + " " + str(self.words) + " " + str(self.currentCost)
 
+# Returns true if a node is a leaf, such that x words has been found
 def isFinished(v):
   return len(v.words) == vertex.finish_value
  
+# input: vertex and list of words
+# output: list of vertices that are adjacent to input vertex in the graph
 def expand_node(v, words):
   unused_words = [ x for x in words if x not in v.words ] 
-  #print(unused_words)
   if v.words:
     res= [ vertex( v.currentCost + word_diff_cost(v.words[-1] ,x) + PRINT_COST, v.words + [x]) for x in unused_words ]
+    return [x for x in res if len(x.words) > len(v.words)]
   res = [ vertex( v.currentCost + word_diff_cost("" ,x) + PRINT_COST, v.words + [x]) for x in unused_words ]
   return [x for x in res if len(x.words) > len(v.words)]
 jobs = get_input(sys.argv[1])
-jobs[-1][0]=6
-dijkstra(jobs[-1])
-print("finished")
-#print( [ str(x) for x in expand_node( vertex(0,["of"]), ["fox","of","xfox","foo","foxxx","off","foff","foox"])])
+for idx,job in enumerate(jobs):
+  print("Case #" + str(idx+1) + ": " + str(dijkstra(job)))
