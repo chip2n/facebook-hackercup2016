@@ -63,8 +63,10 @@ cheapestNextWord word words = minimumBy lowestCost costs
         costs = map (\w -> (w, wordDiff word w)) words'
 
 solve2 :: [String] -> Int -> Int
-solve2 words count = minimum $ map (\w -> solve' words count (length w) w) words
-  where solve' _     1     cost word = 1 + cost + length word
-        solve' words count cost word = let words' = delete word words
-                                           (nextWord, cost') = cheapestNextWord word words
-                                       in  solve' words' (count - 1) (1 + cost + cost') nextWord
+solve2 words count = minimum $ map (\w -> length w + solve' words count w) words
+  where solve' _     1     word = 1 + length word -- print cost & cost to clear
+        solve' words count word =
+            let words' = delete word words
+                (nextWord, cost) = cheapestNextWord word words
+                newCost = 1 + cost   -- print cost & cost for next word
+            in  newCost + solve' words' (count - 1) nextWord
