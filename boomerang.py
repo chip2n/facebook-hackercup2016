@@ -3,28 +3,40 @@
 import itertools
 import sys
 import math
-
-lookup_table = { 4: 6, 3: 3, 2: 1,1: 0 }
+from collections import Counter
 
 def parse_tuple(s):
   x, y = s.split(' ')
   return int(x), int(y)
 
+def group(ls):
+    counter = Counter()
+    for l in ls:
+        counter[l] += 1
+    return list(counter.values())
+
+def boom(count):
+    if count < 2:
+        return 0
+    if count == 2:
+        return 1
+    return int(math.factorial(count) / (2 * math.factorial(count - 2)))
+
 def boomerang_count(origin, universe):
   """Time complexity: O(|universe|)"""
   distances = [distance(origin, point) for point in universe]
-  distances.sort()
 
-  groups = itertools.groupby(distances, lambda d: d)
-  groups = [lookup_table[len(list(y))] for x, y in groups]
-  # lookup and sum 
+  groups = group(distances)
+  groups = [boom(x) for x in groups]
 
   return sum(groups)
 
 def distance(c1, c2):
   x1, y1 = c1
   x2, y2 = c2
-  return math.hypot(x2 - x1, y2 - y1)
+  x = (x2-x1)
+  y = (y2-y1)
+  return x*x + y*y
 
 def get_input(filename):
   with open(filename) as f:
@@ -44,5 +56,3 @@ def main():
 
 if __name__ == '__main__':
   main()
-
-  #print filter(lambda x: len(x.split(' ')) == 2, lines)
